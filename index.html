@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Калькулятор" />
+  <meta name="theme-color" content="#1d4ed8" />
+  <title>Кредитный калькулятор</title>
+
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --blue: #1d4ed8;
+      --blue-light: #eff6ff;
+      --green: #15803d;
+      --red: #b91c1c;
+      --orange: #c2410c;
+      --dark: #1f2937;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .app {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px;
+      padding-bottom: 96px;
+    }
+
+    h1 {
+      font-size: 24px;
+      line-height: 1.2;
+      margin: 0 0 6px;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin: 0 0 16px;
+    }
+
+    h3 {
+      font-size: 17px;
+      margin: 0 0 14px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.45;
+      margin-bottom: 16px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 14px;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      min-width: max-content;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      padding: 11px 14px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .sub-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .form-grid,
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      height: 50px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--text);
+      font-size: 18px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px var(--blue-light);
+    }
+
+    .type-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .type-btn {
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      min-height: 52px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .type-btn.active {
+      background: var(--blue);
+      color: #ffffff;
+      border-color: var(--blue);
+    }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button {
+      min-height: 48px;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary-btn {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .secondary-btn {
+      background: var(--dark);
+      color: #fff;
+    }
+
+    .result-boxes {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .result-box {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      background: #f9fafb;
+    }
+
+    .result-box .label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .result-box .value {
+      font-size: 19px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .green { color: var(--green); }
+    .red { color: var(--red); }
+    .orange { color: var(--orange); }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 16px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    table {
+      min-width: 720px;
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--border);
+      padding: 10px 8px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #eef2f7;
+      color: #374151;
+      font-weight: 800;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    td:first-child,
+    th:first-child {
+      text-align: center;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .message {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 12px;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+
+    .warning {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #9a3412;
+    }
+
+    .success {
+      background: #ecfdf5;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+    }
+
+    .fixed-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      z-index: 50;
+    }
+
+    .fixed-bar button {
+      min-height: 50px;
+      font-size: 15px;
+    }
+
+    .small-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      margin-top: 12px;
+    }
+
+    .print-title {
+      display: none;
+    }
+
+    @media (min-width: 720px) {
+      .form-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .form-grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .result-boxes {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .btn-row {
+        grid-template-columns: auto auto;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        color: #000;
+      }
+
+      .app {
+        max-width: none;
+        padding: 0;
+      }
+
+      .tabs,
+      .btn-row,
+      .fixed-bar,
+      .no-print {
+        display: none !important;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .card,
+      .sub-card {
+        border: none;
+        padding: 0;
+        margin-bottom: 20px;
+        page-break-inside: avoid;
+      }
+
+      .print-title {
+        display: block;
+        margin-bottom: 18px;
+      }
+
+      .result-boxes {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .result-box {
+        border: 1px solid #999;
+        background: #fff;
+      }
+
+      .table-wrap {
+        overflow: visible;
+        border: none;
+      }
+
+      table {
+        min-width: 0;
+        font-size: 11px;
+      }
+
+      th,
+      td {
+        padding: 5px;
+        border: 1px solid #999;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header>
+      <h1>Кредитный калькулятор</h1>
+      <div class="subtitle">
+        Расчет кредита, кредитной карты, сравнение вариантов и сохранение результата в PDF.
+      </div>
+    </header>
+
+    <div class="tabs no-print">
+      <button class="tab-btn active" onclick="showTab('main', this)">Расчет</button>
+      <button class="tab-btn" onclick="showTab('compare', this)">Сравнение</button>
+    </div>
+
+    <div class="print-title">
+      <h1>Кредитный расчет</h1>
+      <p id="printDate"></p>
+    </div>
+
+    <section id="main" class="tab">
+      <div class="card">
+        <h2>Основной расчет</h2>
+
+        <div class="type-switch no-print">
+          <button id="mainLoanBtn" class="type-btn active" onclick="setMainDebtType('loan')">
+            Кредит
+          </button>
+          <button id="mainCardBtn" class="type-btn" onclick="setMainDebtType('card')">
+            Кредитная карта
+          </button>
+        </div>
+
+        <div class="form-grid">
+          <div>
+            <label id="mainAmountLabel">Сумма кредита, ₽</label>
+            <input id="mainAmount" inputmode="decimal" type="number" value="500000" min="0" step="1000">
+          </div>
+
+          <div>
+            <label>Годовая ставка, %</label>
+            <input id="mainRate" inputmode="decimal" type="number" value="20" min="0" step="0.01">
+          </div>
+
+          <div id="mainTermBlock">
+            <label>Срок, месяцев</label>
+            <input id="mainMonths" inputmode="numeric" type="number" value="36" min="1" step="1">
+          </div>
+
+          <div id="mainPaymentBlock" class="hidden">
+            <label>Ежемесячный платеж, ₽</label>
+            <input id="mainPayment" inputmode="decimal" type="number" value="10000" min="0" step="100">
+          </div>
+        </div>
+
+        <div class="btn-row no-print">
+          <button class="primary-btn" onclick="calculateMain()">Рассчитать</button>
+          <button class="secondary-btn" onclick="printCurrentReport()">Сохранить / отправить PDF</button>
+        </div>
+
+        <div id="mainResults"></div>
+        <div id="mainTable"></div>
+
+        <div class="small-note">
+          Кредит считается по аннуитетной формуле. Кредитная карта считается без фиксированного срока: срок закрытия зависит от размера ежемесячного платежа.
+        </div>
+      </div>
+    </section>
+
+    <section id="compare" class="tab hidden">
+      <div class="card">
+        <h2>Сравнение двух вариантов</h2>
+
+        <div class="form-grid-2">
+          <div class="sub-card">
+            <h3>Вариант №1</h3>
+
+            <label>Тип</label>
+            <select id="cmp1Type" onchange="updateCompareType(1)">
+              <option value="loan">Кредит</option>
+              <option value="card">Кредитная карта</option>
+            </select>
+
+            <label id="cmp1AmountLabel">Сумма кредита, ₽</label>
+            <input id="cmp1Amount" inputmode="decimal" type="number" value="500000" min="0" step="1000">
+
+            <label>Годовая ставка, %</label>
+            <input id="cmp1Rate" inputmode="decimal" type="number" value="20" min="0" step="0.01">
+
+            <div id="cmp1TermBlock">
+              <label>Срок, месяцев</label>
+              <input id="cmp1Months" inputmode="numeric" type="number" value="36" min="1" step="1">
+            </div>
+
+            <div id="cmp1PaymentBlock" class="hidden">
+              <label>Ежемесячный платеж, ₽</label>
+              <input id="cmp1Payment" inputmode="decimal" type="number" value="10000" min="0" step="100">
+            </div>
+          </div>
+
+          <div class="sub-card">
+            <h3>Вариант №2</h3>
+
+            <label>Тип</label>
+            <select id="cmp2Type" onchange="updateCompareType(2)">
+              <option value="loan">Кредит</option>
+              <option value="card">Кредитная карта</option>
+            </select>
+
+            <label id="cmp2AmountLabel">Сумма кредита, ₽</label>
+            <input id="cmp2Amount" inputmode="decimal" type="number" value="500000" min="0" step="1000">
+
+            <label>Годовая ставка, %</label>
+            <input id="cmp2Rate" inputmode="decimal" type="number" value="18" min="0" step="0.01">
+
+            <div id="cmp2TermBlock">
+              <label>Срок, месяцев</label>
+              <input id="cmp2Months" inputmode="numeric" type="number" value="48" min="1" step="1">
+            </div>
+
+            <div id="cmp2PaymentBlock" class="hidden">
+              <label>Ежемесячный платеж, ₽</label>
+              <input id="cmp2Payment" inputmode="decimal" type="number" value="10000" min="0" step="100">
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row no-print">
+          <button class="primary-btn" onclick="compareOptions()">Сравнить</button>
+          <button class="secondary-btn" onclick="printCurrentReport()">Сохранить / отправить PDF</button>
+        </div>
+
+        <div id="compareResults"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="fixed-bar no-print">
+    <button class="primary-btn" onclick="calculateActiveTab()">Рассчитать</button>
+    <button class="secondary-btn" onclick="printCurrentReport()">PDF</button>
+  </div>
+
+  <script>
+    let activeTab = 'main';
+    let mainDebtType = 'loan';
+
+    function money(value) {
+      return new Intl.NumberFormat('ru-RU', {
+        style: 'currency',
+        currency: 'RUB',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(value);
+    }
+
+    function numberValue(id) {
+      const raw = String(document.getElementById(id).value).replace(',', '.');
+      const value = Number(raw);
+      return isNaN(value) ? 0 : value;
+    }
+
+    function showTab(tabId, button) {
+      activeTab = tabId;
+
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+      document.getElementById(tabId).classList.remove('hidden');
+      button.classList.add('active');
+    }
+
+    function calculateActiveTab() {
+      if (activeTab === 'main') {
+        calculateMain();
+      }
+
+      if (activeTab === 'compare') {
+        compareOptions();
+      }
+    }
+
+    function printCurrentReport() {
+      calculateActiveTab();
+
+      const now = new Date();
+      document.getElementById('printDate').innerText =
+        'Дата формирования: ' +
+        now.toLocaleDateString('ru-RU') +
+        ' ' +
+        now.toLocaleTimeString('ru-RU');
+
+      setTimeout(() => {
+        window.print();
+      }, 100);
+    }
+
+    function setMainDebtType(type) {
+      mainDebtType = type;
+
+      document.getElementById('mainLoanBtn').classList.remove('active');
+      document.getElementById('mainCardBtn').classList.remove('active');
+
+      document.getElementById('mainResults').innerHTML = '';
+      document.getElementById('mainTable').innerHTML = '';
+
+      if (type === 'loan') {
+        document.getElementById('mainLoanBtn').classList.add('active');
+        document.getElementById('mainAmountLabel').innerText = 'Сумма кредита, ₽';
+        document.getElementById('mainTermBlock').classList.remove('hidden');
+        document.getElementById('mainPaymentBlock').classList.add('hidden');
+      }
+
+      if (type === 'card') {
+        document.getElementById('mainCardBtn').classList.add('active');
+        document.getElementById('mainAmountLabel').innerText = 'Текущий долг по карте, ₽';
+        document.getElementById('mainTermBlock').classList.add('hidden');
+        document.getElementById('mainPaymentBlock').classList.remove('hidden');
+      }
+    }
+
+    function updateCompareType(index) {
+      const type = document.getElementById(`cmp${index}Type`).value;
+
+      document.getElementById(`cmp${index}TermBlock`).classList.toggle('hidden', type === 'card');
+      document.getElementById(`cmp${index}PaymentBlock`).classList.toggle('hidden', type === 'loan');
+
+      document.getElementById(`cmp${index}AmountLabel`).innerText =
+        type === 'loan' ? 'Сумма кредита, ₽' : 'Текущий долг по карте, ₽';
+
+      document.getElementById('compareResults').innerHTML = '';
+    }
+
+    function calculateMain() {
+      if (mainDebtType === 'loan') {
+        calculateMainLoan();
+      }
+
+      if (mainDebtType === 'card') {
+        calculateMainCard();
+      }
+    }
+
+    function annuityPayment(amount, annualRate, months) {
+      const monthlyRate = annualRate / 100 / 12;
+
+      if (annualRate === 0) {
+        return amount / months;
+      }
+
+      return amount * monthlyRate * Math.pow(1 + monthlyRate, months)
+        / (Math.pow(1 + monthlyRate, months) - 1);
+    }
+
+    function buildLoanSchedule(amount, annualRate, months) {
+      const monthlyRate = annualRate / 100 / 12;
+      const payment = annuityPayment(amount, annualRate, months);
+
+      let balance = amount;
+      let totalPayment = 0;
+      let totalInterest = 0;
+      const schedule = [];
+
+      for (let month = 1; month <= months; month++) {
+        const interest = balance * monthlyRate;
+        let principal = payment - interest;
+        let realPayment = payment;
+
+        if (month === months) {
+          principal = balance;
+          realPayment = principal + interest;
+        }
+
+        balance -= principal;
+
+        if (balance < 0.01) {
+          balance = 0;
+        }
+
+        totalPayment += realPayment;
+        totalInterest += interest;
+
+        schedule.push({
+          month,
+          payment: realPayment,
+          principal,
+          interest,
+          balance
+        });
+      }
+
+      return {
+        type: 'loan',
+        amount,
+        annualRate,
+        months,
+        monthlyPayment: payment,
+        totalPayment,
+        totalInterest,
+        schedule
+      };
+    }
+
+    function buildCardSchedule(debt, annualRate, payment) {
+      const monthlyRate = annualRate / 100 / 12;
+      const firstMonthInterest = debt * monthlyRate;
+
+      if (payment <= firstMonthInterest && annualRate > 0) {
+        return {
+          error: true,
+          message:
+            `При таких условиях долг не будет закрыт. Первый месяц процентов: ${money(firstMonthInterest)}, платеж: ${money(payment)}. Ежемесячный платеж должен быть больше начисленных процентов.`
+        };
+      }
+
+      let balance = debt;
+      let month = 0;
+      let totalPayment = 0;
+      let totalInterest = 0;
+      const schedule = [];
+
+      while (balance > 0.01 && month < 1200) {
+        month++;
+
+        const interest = balance * monthlyRate;
+        let principal = payment - interest;
+        let realPayment = payment;
+
+        if (principal >= balance) {
+          principal = balance;
+          realPayment = principal + interest;
+        }
+
+        balance -= principal;
+
+        if (balance < 0.01) {
+          balance = 0;
+        }
+
+        totalPayment += realPayment;
+        totalInterest += interest;
+
+        schedule.push({
+          month,
+          payment: realPayment,
+          principal,
+          interest,
+          balance
+        });
+      }
+
+      if (month >= 1200) {
+        return {
+          error: true,
+          message: 'Расчет остановлен на 1200 месяцах. Вероятно, платеж слишком мал.'
+        };
+      }
+
+      return {
+        type: 'card',
+        amount: debt,
+        annualRate,
+        months: month,
+        monthlyPayment: payment,
+        totalPayment,
+        totalInterest,
+        schedule
+      };
+    }
+
+    function formatMonths(totalMonths) {
+      const years = Math.floor(totalMonths / 12);
+      const months = totalMonths % 12;
+
+      if (years > 0 && months > 0) {
+        return `${years} г. ${months} мес.`;
+      }
+
+      if (years > 0) {
+        return `${years} г.`;
+      }
+
+      return `${months} мес.`;
+    }
+
+    function calculateMainLoan() {
+      const amount = numberValue('mainAmount');
+      const rate = numberValue('mainRate');
+      const months = Math.round(numberValue('mainMonths'));
+
+      if (amount <= 0 || months <= 0 || rate < 0) {
+        document.getElementById('mainResults').innerHTML =
+          '<div class="message warning">Проверьте данные: сумма и срок должны быть больше нуля, ставка не может быть отрицательной.</div>';
+        document.getElementById('mainTable').innerHTML = '';
+        return;
+      }
+
+      const result = buildLoanSchedule(amount, rate, months);
+
+      document.getElementById('mainResults').innerHTML = `
+        <div class="result-boxes">
+          <div class="result-box">
+            <div class="label">Тип</div>
+            <div class="value">Кредит</div>
+          </div>
+          <div class="result-box">
+            <div class="label">Ежемесячный платеж</div>
+            <div class="value">${money(result.monthlyPayment)}</div>
+          </div>
+          <div class="result-box">
+            <div class="label">Всего выплатите</div>
+            <div class="value">${money(result.totalPayment)}</div>
+          </div>
+          <div class="result-box">
+            <div class="label">Переплата</div>
+            <div class="value red">${money(result.totalInterest)}</div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('mainTable').innerHTML = renderScheduleTable(result.schedule);
+    }
+
+    function calculateMainCard() {
+      const debt = numberValue('mainAmount');
+      const rate = numberValue('mainRate');
+      const payment = numberValue('mainPayment');
+
+      if (debt <= 0 || payment <= 0 || rate < 0) {
+        document.getElementById('mainResults').innerHTML =
+          '<div class="message warning">Проверьте данные: долг и платеж должны быть больше нуля, ставка не может быть отрицательной.</div>';
+        document.getElementById('mainTable').innerHTML = '';
+        return;
+      }
+
+      const result = buildCardSchedule(debt, rate, payment);
+
+      if (result.error) {
+        document.getElementById('mainResults').innerHTML =
+          `<div class="message warning">${result.message}</div>`;
+        document.getElementById('mainTable').innerHTML = '';
+        return;
+      }
+
+      document.getElementById('mainResults').innerHTML = `
+        <div class="result-boxes">
+          <div class="result-box">
+            <div class="label">Тип</div>
+            <div class="value">Кредитная карта</div>
+          </div>
+          <div class="result-box">
+            <div class="label">Срок закрытия</div>
+            <div class="value green">${formatMonths(result.months)}</div>
+          </div>
+          <div class="result-box">
+            <div class="label">Всего выплатите</div>
+            <div class="value">${money(result.totalPayment)}</div>
+          </div>
+          <div class="result-box">
+            <div class="label">Переплата процентами</div>
+            <div class="value red">${money(result.totalInterest)}</div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('mainTable').innerHTML = renderScheduleTable(result.schedule);
+    }
+
+    function renderScheduleTable(schedule) {
+      let html = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Месяц</th>
+                <th>Платеж</th>
+                <th>Основной долг</th>
+                <th>Проценты</th>
+                <th>Остаток</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      schedule.forEach(row => {
+        html += `
+          <tr>
+            <td>${row.month}</td>
+            <td>${money(row.payment)}</td>
+            <td>${money(row.principal)}</td>
+            <td>${money(row.interest)}</td>
+            <td>${money(row.balance)}</td>
+          </tr>
+        `;
+      });
+
+      html += `
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      return html;
+    }
+
+    function getCompareOption(index) {
+      const type = document.getElementById(`cmp${index}Type`).value;
+      const amount = numberValue(`cmp${index}Amount`);
+      const rate = numberValue(`cmp${index}Rate`);
+
+      if (type === 'loan') {
+        const months = Math.round(numberValue(`cmp${index}Months`));
+
+        if (amount <= 0 || months <= 0 || rate < 0) {
+          return {
+            error: true,
+            message: `Проверьте данные по варианту №${index}: сумма и срок должны быть больше нуля, ставка не может быть отрицательной.`
+          };
+        }
+
+        return buildLoanSchedule(amount, rate, months);
+      }
+
+      if (type === 'card') {
+        const payment = numberValue(`cmp${index}Payment`);
+
+        if (amount <= 0 || payment <= 0 || rate < 0) {
+          return {
+            error: true,
+            message: `Проверьте данные по варианту №${index}: долг и платеж должны быть больше нуля, ставка не может быть отрицательной.`
+          };
+        }
+
+        const result = buildCardSchedule(amount, rate, payment);
+
+        if (result.error) {
+          return {
+            error: true,
+            message: `Вариант №${index}: ${result.message}`
+          };
+        }
+
+        return result;
+      }
+    }
+
+    function compareOptions() {
+      const r1 = getCompareOption(1);
+      const r2 = getCompareOption(2);
+
+      if (r1.error) {
+        document.getElementById('compareResults').innerHTML =
+          `<div class="message warning">${r1.message}</div>`;
+        return;
+      }
+
+      if (r2.error) {
+        document.getElementById('compareResults').innerHTML =
+          `<div class="message warning">${r2.message}</div>`;
+        return;
+      }
+
+      const diffOverpayment = Math.abs(r1.totalInterest - r2.totalInterest);
+      const diffTotal = Math.abs(r1.totalPayment - r2.totalPayment);
+      const diffMonthlyPayment = Math.abs(r1.monthlyPayment - r2.monthlyPayment);
+      const diffMonths = Math.abs(r1.months - r2.months);
+
+      let conclusion = '';
+
+      if (r1.totalInterest < r2.totalInterest) {
+        conclusion = `По переплате выгоднее вариант №1. Экономия по процентам: ${money(diffOverpayment)}.`;
+      } else if (r2.totalInterest < r1.totalInterest) {
+        conclusion = `По переплате выгоднее вариант №2. Экономия по процентам: ${money(diffOverpayment)}.`;
+      } else {
+        conclusion = 'По сумме переплаты варианты равны.';
+      }
+
+      const typeName1 = r1.type === 'loan' ? 'Кредит' : 'Кредитная карта';
+      const typeName2 = r2.type === 'loan' ? 'Кредит' : 'Кредитная карта';
+
+      document.getElementById('compareResults').innerHTML = `
+        <div class="result-boxes">
+          <div class="result-box">
+            <div class="label">Вариант №1</div>
+            <div class="value">${typeName1}</div>
+          </div>
+          <div class="result-box">
+            <div class="label">Платеж №1</div>
+            <div class="value">${money(r1.monthlyPayment)}</div>
+          </div>
+          <div class="result-box">
+            <div class="label">Срок №1</div>
+            <div class="value">${formatMonths(r1.months)}</div>
+          </div>
+          <div class="result-box">
+            <div class="label">Переплата №1</div>
+            <div class="value red">${money(r1.totalInterest)}</div>
+          </div>
+        </div>
+
+        <div class="result-boxes">
+          <div class="result-box">
+            <div class="label">Вариант №2</div>
+            <div class="value">${typeName2}</div>
+          </div>
+          <div class="result-box">
+            <div class="label">Платеж №2</div>
+            <div class="value">${money(r2.monthlyPayment)}</div>
+          </div>
+          <div class="result-box">
+            <div class="label">Срок №2</div>
+            <div class="value">${formatMonths(r2.months)}</div>
+          </div>
+          <div class="result-box">
+            <div class="label">Переплата №2</div>
+            <div class="value red">${money(r2.totalInterest)}</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Показатель</th>
+                <th>Вариант №1</th>
+                <th>Вариант №2</th>
+                <th>Разница</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Тип</td>
+                <td>${typeName1}</td>
+                <td>${typeName2}</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Сумма / долг</td>
+                <td>${money(r1.amount)}</td>
+                <td>${money(r2.amount)}</td>
+                <td>${money(Math.abs(r1.amount - r2.amount))}</td>
+              </tr>
+              <tr>
+                <td>Ставка</td>
+                <td>${r1.annualRate}%</td>
+                <td>${r2.annualRate}%</td>
+                <td>${Math.abs(r1.annualRate - r2.annualRate).toFixed(2)}%</td>
+              </tr>
+              <tr>
+                <td>Ежемесячный платеж</td>
+                <td>${money(r1.monthlyPayment)}</td>
+                <td>${money(r2.monthlyPayment)}</td>
+                <td>${money(diffMonthlyPayment)}</td>
+              </tr>
+              <tr>
+                <td>Срок закрытия</td>
+                <td>${formatMonths(r1.months)}</td>
+                <td>${formatMonths(r2.months)}</td>
+                <td>${diffMonths} мес.</td>
+              </tr>
+              <tr>
+                <td>Всего выплат</td>
+                <td>${money(r1.totalPayment)}</td>
+                <td>${money(r2.totalPayment)}</td>
+                <td>${money(diffTotal)}</td>
+              </tr>
+              <tr>
+                <td>Переплата</td>
+                <td>${money(r1.totalInterest)}</td>
+                <td>${money(r2.totalInterest)}</td>
+                <td>${money(diffOverpayment)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="message success">
+          ${conclusion}
+        </div>
+      `;
+    }
+
+    calculateMain();
+  </script>
+</body>
+</html>
